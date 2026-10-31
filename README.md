@@ -4,10 +4,8 @@
 University College Dublin, Ireland
 
 Published at the **2026 IEEE International Conference on Agentic AI (ICA 2026)**.
-A companion version, *Behavioural Signatures of a Language-Model Agent in Autonomous
-Vision-Architecture Research*, was accepted at the NeurIPS 2026 Workshop for Autonomous
-Machine Learning Research (AutoMLR). An extended preprint with full appendices is available
-on arXiv: [arXiv:2608.01995](https://arxiv.org/abs/2608.01995).
+An extended preprint with full appendices is available on arXiv:
+[arXiv:2608.01995](https://arxiv.org/abs/2608.01995).
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
