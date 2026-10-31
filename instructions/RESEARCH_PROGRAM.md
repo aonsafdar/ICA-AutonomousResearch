@@ -2,7 +2,7 @@
 
 This file is the **human-authored “research program”** for an AI agent, in the spirit of [karpathy/autoresearch](https://github.com/karpathy/autoresearch): propose hypotheses, edit config and (when needed) `models/cls_cvt.py`, run **GPU training only via Slurm**, log to **Weights & Biases**, and **commit + push to GitHub** when validation improves.
 
-**Companion:** [`AGENT_INSTRUCTIONS.md`](AGENT_INSTRUCTIONS.md) — one-page entry path. **Tooling (MCP + `gh`):** [`autoresearch/TOOLING.md`](autoresearch/TOOLING.md). If you run the agent as **the CLI agent in tmux** on the login node, MCP is configured for **the CLI agent** ([docs](https://docs.agent.com/en/docs/agent-code/mcp)), including project [`.mcp.json`](.mcp.json)—not only Cursor.
+**Companion:** [`AGENT_INSTRUCTIONS.md`](AGENT_INSTRUCTIONS.md) — one-page entry path. **Tooling (MCP + `gh`):** [`autoresearch/TOOLING.md`](autoresearch/TOOLING.md). If you run the agent as **Claude Code in tmux** on the login node, MCP is configured for **Claude Code** ([docs](https://docs.anthropic.com/en/docs/claude-code/mcp)), including project [`.mcp.json`](.mcp.json)—not only Cursor.
 
 ---
 
@@ -38,7 +38,7 @@ Check the printed **Params** and **GFLOPs**. If you exceed the envelope, shrink 
 
 **Central constraint (unchanged):** Ideas must stay aligned with **channel attention / axis decoupling**. New attention mechanisms, tokenization, or residual paths are **in scope** if they **preserve or sharpen** that story—not generic ViT clones unrelated to channel-as-token geometry.
 
-**External grounding (optional tools):** Wire these for **the CLI agent** on the machine where you run **`agent` in tmux** ([`autoresearch/TOOLING.md`](autoresearch/TOOLING.md), [`.mcp.json`](.mcp.json)). `~/.cursor/mcp.json` does **not** affect the tmux CLI.
+**External grounding (optional tools):** Wire these for **Claude Code** on the machine where you run **`claude` in tmux** ([`autoresearch/TOOLING.md`](autoresearch/TOOLING.md), [`.mcp.json`](.mcp.json)). `~/.cursor/mcp.json` does **not** affect the tmux CLI.
 
 - **DeepWiki MCP** — structured Q&A / wiki content for **public GitHub repos** (compare block layouts, attention variants).
 - **alphaXiv MCP** — `https://api.alphaxiv.org/mcp/v1` with **`Authorization: Bearer ${ALPHAXIV_API_KEY}`** (export key before starting the agent; see alphaXiv account / API settings).

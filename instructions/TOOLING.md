@@ -1,29 +1,34 @@
 # Agent tooling setup (literature + repos)
 
+The autonomous agent in this case study is **Claude Code** (Anthropic **Claude
+Opus 4-series**), run in a `tmux` session on the cluster login node. A
+cheaper/faster model (Sonnet) was used for routine iteration when usage limits
+bit; the strongest model was reserved for hard debugging.
+
 ## Which config matters for *you*
 
 | How you run the agent | Where MCP must be configured |
 |------------------------|------------------------------|
-| **the CLI agent / `agent` CLI in tmux** on the login node (your autoresearch loop) | **[the CLI agent MCP](https://docs.agent.com/en/docs/agent-code/mcp)** — `agent mcp add`, **`~/.agent.json`**, and/or **project `.mcp.json`** in this repo. |
-| **Cursor** chat only | **`~/.cursor/mcp.json`** — does **not** apply to the tmux `agent` CLI. |
+| **Claude Code / `claude` CLI in tmux** on the login node (your autoresearch loop) | **[Claude Code MCP](https://docs.anthropic.com/en/docs/claude-code/mcp)** — `claude mcp add`, **`~/.claude.json`**, and/or **project `.mcp.json`** in this repo. |
+| **Cursor** chat only | **`~/.cursor/mcp.json`** — does **not** apply to the tmux `claude` CLI. |
 
-If the autonomous agent only runs **inside tmux via the CLI agent**, **`~/.cursor/mcp.json` is irrelevant** unless you also use Cursor. Configure MCP for **the CLI agent** on the **same machine** where tmux runs (`agent mcp list`, `/mcp` inside a session).
+If the autonomous agent only runs **inside tmux via Claude Code**, **`~/.cursor/mcp.json` is irrelevant** unless you also use Cursor. Configure MCP for **Claude Code** on the **same machine** where tmux runs (`claude mcp list`, `/mcp` inside a session).
 
 ---
 
-## 1. the CLI agent MCP (primary — tmux on login node)
+## 1. Claude Code MCP (primary — tmux on login node)
 
-Official guide: **[Connect the CLI agent to tools via MCP](https://docs.agent.com/en/docs/agent-code/mcp)**.
+Official guide: **[Connect Claude Code to tools via MCP](https://docs.anthropic.com/en/docs/claude-code/mcp)**.
 
 ### Quick adds (HTTP)
 
 ```bash
 # DeepWiki — GitHub repo wikis / structure
-agent mcp add --transport http deepwiki https://<wiki-server>/mcp
+claude mcp add --transport http deepwiki https://<wiki-server>/mcp
 
 # alphaXiv — papers MCP (needs API key; create one in your alphaXiv account)
 export ALPHAXIV_API_KEY="your-key-here"   # put in ~/.bashrc or session before agent
-agent mcp add --transport http alphaxiv https://<lit-server>/mcp/v1 \
+claude mcp add --transport http alphaxiv https://<lit-server>/mcp/v1 \
   --header "Authorization: Bearer ${ALPHAXIV_API_KEY}"
 ```
 
@@ -39,21 +44,21 @@ pip install uv
 uv tool install arxiv-mcp-server
 mkdir -p /path/to/scratch/.arxiv-mcp-server/papers
 
-agent mcp add --transport stdio arxiv-mcp-server -- \
+claude mcp add --transport stdio arxiv-mcp-server -- \
   /path/to/conda-env/bin/uv tool run arxiv-mcp-server \
   --storage-path /path/to/scratch/.arxiv-mcp-server/papers
 ```
 
 ### Hugging Face MCP
 
-Open **[<hub>/settings/mcp](https://<hub>/settings/mcp)** while logged in. If they offer **the CLI agent** instructions, use those. Otherwise use **`agent mcp add-json`** with the JSON they provide (often `type` + `url` + `headers`), or add the equivalent **`agent mcp add --transport http ...`** line. **Do not commit** raw tokens; prefer env vars in `.mcp.json` (`${VAR}` — [supported in project `.mcp.json`](https://docs.agent.com/en/docs/agent-code/mcp#environment-variable-expansion-in-mcpjson)).
+Open **[<hub>/settings/mcp](https://<hub>/settings/mcp)** while logged in. If they offer **Claude Code** instructions, use those. Otherwise use **`claude mcp add-json`** with the JSON they provide (often `type` + `url` + `headers`), or add the equivalent **`claude mcp add --transport http ...`** line. **Do not commit** raw tokens; prefer env vars in `.mcp.json` (`${VAR}` — [supported in project `.mcp.json`](https://docs.anthropic.com/en/docs/claude-code/mcp#environment-variable-expansion-in-mcpjson)).
 
 ### Manage & verify
 
 ```bash
-agent mcp list
-agent mcp get deepwiki
-# Inside an interactive the CLI agent session:
+claude mcp list
+claude mcp get deepwiki
+# Inside an interactive Claude Code session:
 #   /mcp
 ```
 
@@ -61,7 +66,7 @@ agent mcp get deepwiki
 
 ## 2. Project `.mcp.json` (this repo)
 
-A **project-scoped** [`.mcp.json`](../.mcp.json) at the repo root is checked in so every clone shares the same **server list**; **secrets** stay in environment variables (e.g. `ALPHAXIV_API_KEY`). After pulling, run **`agent mcp reset-project-choices`** once if the agent asks for approval.
+A **project-scoped** [`.mcp.json`](../.mcp.json) at the repo root is checked in so every clone shares the same **server list**; **secrets** stay in environment variables (e.g. `ALPHAXIV_API_KEY`). After pulling, run **`claude mcp reset-project-choices`** once if the agent asks for approval.
 
 **Before starting the loop in tmux:**
 
@@ -84,13 +89,13 @@ gh auth status
 
 ## 4. Optional: Cursor-only MCP
 
-If you **also** use Cursor, configure **`~/.cursor/mcp.json`** separately. Same URLs (DeepWiki, alphaXiv with Bearer header if the UI supports it, etc.) — see Cursor MCP docs. This does **not** wire tools into tmux `agent`.
+If you **also** use Cursor, configure **`~/.cursor/mcp.json`** separately. Same URLs (DeepWiki, alphaXiv with Bearer header if the UI supports it, etc.) — see Cursor MCP docs. This does **not** wire tools into tmux `claude`.
 
 ---
 
-## 5. Verification checklist (the CLI agent loop)
+## 5. Verification checklist (Claude Code loop)
 
-- [ ] On the login node: `agent mcp list` shows **deepwiki**, **alphaxiv**, **arxiv-mcp-server**, and **Hugging Face** (if added).
+- [ ] On the login node: `claude mcp list` shows **deepwiki**, **alphaxiv**, **arxiv-mcp-server**, and **Hugging Face** (if added).
 - [ ] `ALPHAXIV_API_KEY` set when using alphaXiv (endpoint returns **401** without auth).
 - [ ] `gh auth status` OK.
 - [ ] Agent prompt still points at **`program.md`** + **`autoresearch/notes.md`**.

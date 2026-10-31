@@ -236,7 +236,7 @@ After the session start reads, **do not re-read these files every turn** — sum
 
 ### Human-side controls (outside this file)
 
-- In **the CLI agent / CLI**, prefer a **faster / cheaper model** for routine iteration if available; reserve the strongest model for hard debugging.
+- In **Claude Code / CLI**, prefer a **faster / cheaper model** for routine iteration if available; reserve the strongest model for hard debugging.
 - Disable or shorten **extended thinking** if it multiplies token use without improving Slurm outcomes.
 
 ---
