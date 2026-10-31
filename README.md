@@ -1,15 +1,14 @@
 # Supplementary materials
 
-This repository accompanies the anonymous double-blind submission "Autonomous
-Vision-Architecture Research with a Language-Model Agent: A Longitudinal
-Case Study".
+This repository accompanies the paper "Autonomous Vision-Architecture Research
+with a Language-Model Agent: A Longitudinal Case Study" by Aon Safdar and
+Mohamed Saadeldin (University College Dublin), published at IEEE ICA 2026.
 
 It contains the implementation-and-appendix PDF (`appendix.pdf`) and everything
 needed to audit the per-hypothesis trace described in the paper and to
 regenerate every figure and table. The full training code
 (model implementation, training driver, and per-run experiment configurations)
-is omitted to preserve double-blind anonymity and will be released under a
-permanent identifier upon acceptance.
+will be released in a future update.
 
 ## Contents
 
@@ -86,7 +85,7 @@ paper's source-control history.
 
 ## Reproducing a training run
 
-The training code is not included in this anonymous bundle. The configurations
+The training code is not yet included in this bundle. The configurations
 in `configs/` and the Slurm templates in `slurm/` document the exact
 hyperparameters and submission protocol used for each phase. With the training
 code (released upon acceptance), the workflow to reproduce a hypothesis is:
@@ -115,14 +114,9 @@ The Slurm template expects to be customised at the top for the target site
 | `slurm/job_watcher.sh.template`                            | Appendix A.4 |
 | `slurm/submit_and_wait.sh.template`                        | Appendix A.4 |
 
-## Notes on anonymisation
+## Notes
 
-All site-specific identifiers (user IDs, cluster paths, partition names,
-accelerator generations, experiment-tracking project names, vendor-specific
-language-model and tooling brands, and vendor documentation URLs) have been
-replaced with neutral placeholders in this bundle. The original artefacts
-(with identifiers restored and with the full training code) will be released
-under a permanent identifier upon acceptance.
-
-If the reviewers identify any anonymity-violating residue, please flag it via
-the submission system; we will issue a revised bundle.
+Some site-specific identifiers (user IDs, cluster paths, partition names,
+accelerator generations, and experiment-tracking project names) are shown as
+neutral placeholders in this bundle. The full training code, with identifiers
+restored, will be released in a future update.
