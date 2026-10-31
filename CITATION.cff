@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this artefact, please cite the paper below."
+title: "Autonomous Vision-Architecture Research with a Language-Model Agent: A Longitudinal Case Study (companion artefact)"
+type: software
+authors:
+  - family-names: Safdar
+    given-names: Aon
+    affiliation: University College Dublin
+    email: aon.safdar@ucdconnect.ie
+  - family-names: Saadeldin
+    given-names: Mohamed
+    affiliation: University College Dublin
+    email: mohamed.saadeldin@ucd.ie
+repository-code: https://github.com/aonsafdar/ICA-AutonomousResearch
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "Autonomous Vision-Architecture Research with a Language-Model Agent: A Longitudinal Case Study"
+  authors:
+    - family-names: Safdar
+      given-names: Aon
+    - family-names: Saadeldin
+      given-names: Mohamed
+  collection-title: "2026 IEEE International Conference on Agentic AI (ICA)"
+  publisher:
+    name: IEEE
+  year: 2026
