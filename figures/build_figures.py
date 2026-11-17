@@ -105,18 +105,19 @@ def fig_trajectory(rows):
     ax1.text(p1_end / 2, 70.5, "Phase 1 (config + code, no literature)", ha="center", fontsize=12, color="gray")
     ax1.text(p1_end + (len(c10_rows) - p1_end) / 2, 70.5, "Phase 1b (+ literature)", ha="center", fontsize=12, color="gray")
 
-    # Regime annotations, staggered vertically in the empty lower-left triangle
-    # so the enlarged labels do not collide with each other or the legend.
-    ax1.annotate("Discovery\n(H1--H6)", xy=(2.0, 90.2), xytext=(4.5, 86.0), fontsize=11,
+    # Regime annotations, placed low in the empty band below the champion curve
+    # (which sits at >=90%), well spaced in x and with arrows up to each regime,
+    # so the enlarged labels never sit on top of the data or the legend.
+    ax1.annotate("Discovery\n(H1--H6)", xy=(1.5, 89.0), xytext=(5.0, 82.5), fontsize=11,
                    ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
-    ax1.annotate("Exploitation\n(H7--H13)", xy=(10, 94.0), xytext=(13, 78.5), fontsize=11,
+    ax1.annotate("Exploitation\n(H7--H13)", xy=(10, 93.5), xytext=(16, 82.5), fontsize=11,
                    ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
-    ax1.annotate("Config-saturation\nplateau (H14--H42)", xy=(28, 94.8), xytext=(30, 74.5),
+    ax1.annotate("Config-saturation\nplateau (H14--H42)", xy=(28, 94.6), xytext=(31, 82.5),
                    fontsize=11, ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
 
     ax1.set_xlim(0, len(c10_rows) + 1)
     ax1.set_ylim(68, 98)
-    ax1.set_ylabel("CIFAR-10 top-1 (%)")
+    ax1.set_ylabel("Top-1 (%)")
     ax1.set_title("(a) Accuracy trajectory, CIFAR-10 chain (5.8M params)")
     # Legend.
     from matplotlib.lines import Line2D
@@ -129,10 +130,12 @@ def fig_trajectory(rows):
     # Place the legend inside the axes in the empty area on the right side of
     # Phase 1b, below the champion plateau and above the Phase 1b label, with a
     # white background so it sits cleanly over the shading.
+    # Legend low on the right, in the empty band between the Phase-1b label
+    # and the champion plateau, so it does not mask any markers.
     ax1.legend(handles=legend_elems, loc="center right",
-                bbox_to_anchor=(0.995, 0.58),
+                bbox_to_anchor=(0.995, 0.30),
                 framealpha=0.92, facecolor="white", edgecolor="lightgray",
-                fontsize=12, borderaxespad=0.4)
+                fontsize=11, borderaxespad=0.4)
 
     # --- Middle panel: CIFAR-100 chain (Phase 2) ---
     c100_rows = [r for r in rows if r["phase"] == "2" and r["outcome"] != "baseline"]
@@ -184,8 +187,8 @@ def fig_trajectory(rows):
                 ax3.scatter(k, Y_LO + 0.03, s=52, color=col, marker="v",
                              alpha=0.9, zorder=3, edgecolors="black", linewidths=0.6)
                 ax3.annotate(f"{r['id']}: {a:.1f}%\n(divergent)",
-                              xy=(k, Y_LO + 0.05), xytext=(k + 0.6, Y_LO + 0.45),
-                              fontsize=11, ha="left", color=col,
+                              xy=(k, Y_LO + 0.03), xytext=(k + 1.3, Y_LO + 0.08),
+                              fontsize=10, ha="left", va="bottom", color=col,
                               arrowprops=dict(arrowstyle="-", lw=0.6, color=col))
                 continue
             if r["outcome"] == "success":
