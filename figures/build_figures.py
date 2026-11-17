@@ -117,6 +117,7 @@ def fig_trajectory(rows):
 
     ax1.set_xlim(0, len(c10_rows) + 1)
     ax1.set_ylim(68, 98)
+    ax1.set_xlabel("Hypothesis index (Phase 1/1b, CIFAR-10, 5.8M params)")
     ax1.set_ylabel("Top-1 (%)")
     ax1.set_title("(a) Accuracy trajectory, CIFAR-10 chain (5.8M params)")
     # Legend.
@@ -273,9 +274,12 @@ def fig_success_rate(rows):
 
     ax.set_xlim(0.5, len(relevant) + 0.5)
     ax.set_ylim(-0.02, 1.05)
-    ax.set_xlabel("Hypothesis index")
-    ax.set_ylabel("Rolling success rate")
-    ax.set_title(f"Rolling success rate across phases ({window}-hypothesis window)")
+    # Fig. 3 is placed at column width; keep its title/axis labels a touch
+    # smaller so they do not overrun the plotting area.
+    ax.set_xlabel("Hypothesis index", fontsize=11.5)
+    ax.set_ylabel("Rolling success rate", fontsize=11.5)
+    ax.set_title(f"Rolling success rate across phases ({window}-hypothesis window)",
+                 fontsize=12)
 
     plt.tight_layout()
     out = HERE / "fig_success_rate.pdf"
