@@ -26,10 +26,10 @@ CSV = HERE.parent / "log" / "hypotheses.csv"
 
 mpl.rcParams.update({
     "font.family": "serif",
-    "font.size": 15,
-    "axes.labelsize": 15,
-    "axes.titlesize": 16,
-    "legend.fontsize": 13,
+    "font.size": 13.5,
+    "axes.labelsize": 13.5,
+    "axes.titlesize": 14.5,
+    "legend.fontsize": 11,
     "xtick.labelsize": 13,
     "ytick.labelsize": 13,
     "axes.spines.top": False,
@@ -73,7 +73,7 @@ def fig_trajectory(rows):
 
     # Per-scale champion curve: step up only on PUSHED within the same scale.
     # Phase 1 + 1b share the CIFAR-10 5.8M chain; Phase 2 is CIFAR-100 22M; Phase 3 is IN-1K 22--27M.
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7.0, 6.4),
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7.0, 6.2),
                                           sharex=False,
                                           gridspec_kw={"height_ratios": [3.2, 1.8, 1.8]})
 
@@ -102,18 +102,18 @@ def fig_trajectory(rows):
     p1_end = sum(1 for r in c10_rows if r["phase"] == "1")
     ax1.axvspan(0.5, p1_end + 0.5, color=PHASE_COLORS["1"], alpha=0.06, zorder=0)
     ax1.axvspan(p1_end + 0.5, len(c10_rows) + 0.5, color=PHASE_COLORS["1b"], alpha=0.06, zorder=0)
-    ax1.text(p1_end / 2, 70.5, "Phase 1 (config + code, no literature)", ha="center", fontsize=12, color="gray")
-    ax1.text(p1_end + (len(c10_rows) - p1_end) / 2, 70.5, "Phase 1b (+ literature)", ha="center", fontsize=12, color="gray")
+    ax1.text(p1_end / 2, 69.2, "Phase 1 (config + code, no literature)", ha="center", fontsize=10, color="gray")
+    ax1.text(p1_end + (len(c10_rows) - p1_end) / 2, 69.2, "Phase 1b (+ literature)", ha="center", fontsize=10, color="gray")
 
     # Regime annotations, placed low in the empty band below the champion curve
     # (which sits at >=90%), well spaced in x and with arrows up to each regime,
     # so the enlarged labels never sit on top of the data or the legend.
-    ax1.annotate("Discovery\n(H1--H6)", xy=(1.5, 89.0), xytext=(5.0, 82.5), fontsize=11,
+    ax1.annotate("Discovery\n(H1--H6)", xy=(1.5, 89.0), xytext=(5.0, 82.0), fontsize=10,
                    ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
-    ax1.annotate("Exploitation\n(H7--H13)", xy=(10, 93.5), xytext=(16, 82.5), fontsize=11,
+    ax1.annotate("Exploitation\n(H7--H13)", xy=(10, 93.5), xytext=(16, 82.0), fontsize=10,
                    ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
-    ax1.annotate("Config-saturation\nplateau (H14--H42)", xy=(28, 94.6), xytext=(31, 82.5),
-                   fontsize=11, ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
+    ax1.annotate("Config-saturation\nplateau (H14--H42)", xy=(28, 94.6), xytext=(31, 82.0),
+                   fontsize=10, ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
 
     ax1.set_xlim(0, len(c10_rows) + 1)
     ax1.set_ylim(68, 98)
@@ -130,12 +130,12 @@ def fig_trajectory(rows):
     # Place the legend inside the axes in the empty area on the right side of
     # Phase 1b, below the champion plateau and above the Phase 1b label, with a
     # white background so it sits cleanly over the shading.
-    # Legend low on the right, in the empty band between the Phase-1b label
-    # and the champion plateau, so it does not mask any markers.
+    # Legend in the empty right-hand band: above the (lowered) phase labels and
+    # below the >=90% champion plateau/markers, so it masks neither.
     ax1.legend(handles=legend_elems, loc="center right",
-                bbox_to_anchor=(0.995, 0.30),
+                bbox_to_anchor=(0.995, 0.42),
                 framealpha=0.92, facecolor="white", edgecolor="lightgray",
-                fontsize=11, borderaxespad=0.4)
+                fontsize=9.5, borderaxespad=0.4)
 
     # --- Middle panel: CIFAR-100 chain (Phase 2) ---
     c100_rows = [r for r in rows if r["phase"] == "2" and r["outcome"] != "baseline"]
@@ -188,7 +188,7 @@ def fig_trajectory(rows):
                              alpha=0.9, zorder=3, edgecolors="black", linewidths=0.6)
                 ax3.annotate(f"{r['id']}: {a:.1f}%\n(divergent)",
                               xy=(k, Y_LO + 0.03), xytext=(k + 1.3, Y_LO + 0.08),
-                              fontsize=10, ha="left", va="bottom", color=col,
+                              fontsize=9, ha="left", va="bottom", color=col,
                               arrowprops=dict(arrowstyle="-", lw=0.6, color=col))
                 continue
             if r["outcome"] == "success":
@@ -228,7 +228,7 @@ def fig_success_rate(rows):
         lo = max(0, i - window + 1)
         rolling.append(sum(ys[lo:i + 1]) / (i - lo + 1))
 
-    fig, ax = plt.subplots(figsize=(7.0, 3.05))
+    fig, ax = plt.subplots(figsize=(7.0, 2.90))
     x = np.arange(1, len(ys) + 1)
 
     # Phase boundaries and band fills (drawn first, behind line).
@@ -258,7 +258,7 @@ def fig_success_rate(rows):
         ax.hlines(rate, lo, hi, colors=PHASE_COLORS[ph],
                    linewidth=1.7, linestyles="dashed", zorder=2)
         ax.text((lo + hi) / 2, label_y, f"{PHASE_LABEL[ph]}: {rate:.0%}",
-                 ha="center", va="top", fontsize=12, color=PHASE_COLORS[ph],
+                 ha="center", va="top", fontsize=10.5, color=PHASE_COLORS[ph],
                  bbox=label_bbox, zorder=5)
 
     # Rolling line drawn last so it sits on top of the bands.
