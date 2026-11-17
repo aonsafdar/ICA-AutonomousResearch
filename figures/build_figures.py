@@ -22,16 +22,16 @@ import matplotlib as mpl
 import numpy as np
 
 HERE = Path(__file__).resolve().parent
-CSV = HERE.parents[0].parent / "log" / "hypotheses.csv"
+CSV = HERE.parent / "log" / "hypotheses.csv"
 
 mpl.rcParams.update({
     "font.family": "serif",
-    "font.size": 9,
-    "axes.labelsize": 9,
-    "axes.titlesize": 10,
-    "legend.fontsize": 8,
-    "xtick.labelsize": 8,
-    "ytick.labelsize": 8,
+    "font.size": 15,
+    "axes.labelsize": 15,
+    "axes.titlesize": 16,
+    "legend.fontsize": 13,
+    "xtick.labelsize": 13,
+    "ytick.labelsize": 13,
     "axes.spines.top": False,
     "axes.spines.right": False,
     "pdf.fonttype": 42,
@@ -72,8 +72,8 @@ def fig_trajectory(rows):
         phase_spans[r["phase"]][1] = i
 
     # Per-scale champion curve: step up only on PUSHED within the same scale.
-    # Phase 1 + 1b share the CIFAR-10 5.8M chain; Phase 2 is CIFAR-100 22M; Phase 3 is IN-1K 22M.
-    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7.0, 6.2),
+    # Phase 1 + 1b share the CIFAR-10 5.8M chain; Phase 2 is CIFAR-100 22M; Phase 3 is IN-1K 22--27M.
+    fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(7.0, 6.4),
                                           sharex=False,
                                           gridspec_kw={"height_ratios": [3.2, 1.8, 1.8]})
 
@@ -88,30 +88,31 @@ def fig_trajectory(rows):
         a = float(r["acc"])
         col = PHASE_COLORS[r["phase"]]
         if r["outcome"] == "success":
-            ax1.scatter(local_x, a, s=25, color=col, marker="o", zorder=3,
-                         edgecolors="black", linewidths=0.4)
+            ax1.scatter(local_x, a, s=44, color=col, marker="o", zorder=3,
+                         edgecolors="black", linewidths=0.6)
             ch = max(ch, a)
             champ_x.append(local_x)
             champ_y.append(ch)
         else:
-            ax1.scatter(local_x, a, s=12, color=col, marker="x", alpha=0.65, zorder=2)
-    ax1.plot(champ_x, champ_y, color="black", lw=1.3, zorder=4, label="Running champion")
+            ax1.scatter(local_x, a, s=24, color=col, marker="x", alpha=0.65, zorder=2)
+    ax1.plot(champ_x, champ_y, color="black", lw=1.9, zorder=4, label="Running champion")
     ax1.axhline(float(baseline_c10["acc"]), color="gray", lw=0.6, ls=":", alpha=0.6)
 
     # Phase shading.
     p1_end = sum(1 for r in c10_rows if r["phase"] == "1")
     ax1.axvspan(0.5, p1_end + 0.5, color=PHASE_COLORS["1"], alpha=0.06, zorder=0)
     ax1.axvspan(p1_end + 0.5, len(c10_rows) + 0.5, color=PHASE_COLORS["1b"], alpha=0.06, zorder=0)
-    ax1.text(p1_end / 2, 70.5, "Phase 1 (config + code, no literature)", ha="center", fontsize=8, color="gray")
-    ax1.text(p1_end + (len(c10_rows) - p1_end) / 2, 70.5, "Phase 1b (+ literature)", ha="center", fontsize=8, color="gray")
+    ax1.text(p1_end / 2, 70.5, "Phase 1 (config + code, no literature)", ha="center", fontsize=12, color="gray")
+    ax1.text(p1_end + (len(c10_rows) - p1_end) / 2, 70.5, "Phase 1b (+ literature)", ha="center", fontsize=12, color="gray")
 
-    # Regime annotations.
-    ax1.annotate("Discovery\n(H1--H6)", xy=(3.5, 92), xytext=(3.5, 79), fontsize=7.5,
-                   ha="center", arrowprops=dict(arrowstyle="->", lw=0.5, color="gray"))
-    ax1.annotate("Exploitation\n(H7--H13)", xy=(10, 94.5), xytext=(10, 81), fontsize=7.5,
-                   ha="center", arrowprops=dict(arrowstyle="->", lw=0.5, color="gray"))
-    ax1.annotate("Config-saturation plateau\n(H14--H42)", xy=(28, 94.8), xytext=(28, 83),
-                   fontsize=7.5, ha="center", arrowprops=dict(arrowstyle="->", lw=0.5, color="gray"))
+    # Regime annotations, staggered vertically in the empty lower-left triangle
+    # so the enlarged labels do not collide with each other or the legend.
+    ax1.annotate("Discovery\n(H1--H6)", xy=(2.0, 90.2), xytext=(4.5, 86.0), fontsize=11,
+                   ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
+    ax1.annotate("Exploitation\n(H7--H13)", xy=(10, 94.0), xytext=(13, 78.5), fontsize=11,
+                   ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
+    ax1.annotate("Config-saturation\nplateau (H14--H42)", xy=(28, 94.8), xytext=(30, 74.5),
+                   fontsize=11, ha="center", arrowprops=dict(arrowstyle="->", lw=0.7, color="gray"))
 
     ax1.set_xlim(0, len(c10_rows) + 1)
     ax1.set_ylim(68, 98)
@@ -120,7 +121,7 @@ def fig_trajectory(rows):
     # Legend.
     from matplotlib.lines import Line2D
     legend_elems = [
-        Line2D([0], [0], color="black", lw=1.3, label="Running champion"),
+        Line2D([0], [0], color="black", lw=1.9, label="Running champion"),
         Line2D([0], [0], marker="o", color="w", markerfacecolor="gray",
                  markeredgecolor="black", markersize=6, lw=0, label="Accepted (PUSHED)"),
         Line2D([0], [0], marker="x", color="gray", lw=0, markersize=6, label="Rejected"),
@@ -129,9 +130,9 @@ def fig_trajectory(rows):
     # Phase 1b, below the champion plateau and above the Phase 1b label, with a
     # white background so it sits cleanly over the shading.
     ax1.legend(handles=legend_elems, loc="center right",
-                bbox_to_anchor=(0.995, 0.62),
+                bbox_to_anchor=(0.995, 0.58),
                 framealpha=0.92, facecolor="white", edgecolor="lightgray",
-                fontsize=7.5, borderaxespad=0.4)
+                fontsize=12, borderaxespad=0.4)
 
     # --- Middle panel: CIFAR-100 chain (Phase 2) ---
     c100_rows = [r for r in rows if r["phase"] == "2" and r["outcome"] != "baseline"]
@@ -144,21 +145,21 @@ def fig_trajectory(rows):
         a = float(r["acc"])
         col = PHASE_COLORS["2"]
         if r["outcome"] == "success":
-            ax2.scatter(local_x, a, s=25, color=col, marker="o", zorder=3,
-                         edgecolors="black", linewidths=0.4)
+            ax2.scatter(local_x, a, s=44, color=col, marker="o", zorder=3,
+                         edgecolors="black", linewidths=0.6)
             ch = max(ch, a)
             champ_x.append(local_x)
             champ_y.append(ch)
         else:
-            ax2.scatter(local_x, a, s=12, color=col, marker="x", alpha=0.65, zorder=2)
-    ax2.plot(champ_x, champ_y, color="black", lw=1.3, zorder=4)
+            ax2.scatter(local_x, a, s=24, color=col, marker="x", alpha=0.65, zorder=2)
+    ax2.plot(champ_x, champ_y, color="black", lw=1.9, zorder=4)
     ax2.axhline(float(baseline_c100["acc"]), color="gray", lw=0.6, ls=":", alpha=0.6)
     ax2.axvspan(0.5, len(c100_rows) + 0.5, color=PHASE_COLORS["2"], alpha=0.06, zorder=0)
     ax2.set_xlim(0, len(c100_rows) + 1)
     ax2.set_ylim(80.5, 84)
     ax2.set_xlabel("Hypothesis index (Phase 2, CIFAR-100, 22M params)")
     ax2.set_ylabel("Top-1 (%)")
-    ax2.set_title("(b) CIFAR-100 chain (22M params)", fontsize=9)
+    ax2.set_title("(b) CIFAR-100 chain (22M params)")
 
     # --- Bottom panel: IN-1K trajectory (Phase 3). ---
     # Clip very-low-acc divergent runs (e.g. H3-8 = 62.93%, NaN divergence) out
@@ -175,32 +176,32 @@ def fig_trajectory(rows):
             if a >= Y_LO:                        # only in-range points join the line
                 xs_in.append(k)
                 ys_in.append(a)
-        ax3.plot(xs_in, ys_in, color="black", lw=0.8, zorder=2)
+        ax3.plot(xs_in, ys_in, color="black", lw=1.3, zorder=2)
         for k, r in enumerate(in1k_rows, start=1):
             a = float(r["acc"])
             col = PHASE_COLORS["3"]
             if a < Y_LO:                          # divergent run: clip marker + label
-                ax3.scatter(k, Y_LO + 0.03, s=30, color=col, marker="v",
-                             alpha=0.9, zorder=3, edgecolors="black", linewidths=0.4)
+                ax3.scatter(k, Y_LO + 0.03, s=52, color=col, marker="v",
+                             alpha=0.9, zorder=3, edgecolors="black", linewidths=0.6)
                 ax3.annotate(f"{r['id']}: {a:.1f}%\n(divergent)",
                               xy=(k, Y_LO + 0.05), xytext=(k + 0.6, Y_LO + 0.45),
-                              fontsize=6.5, ha="left", color=col,
-                              arrowprops=dict(arrowstyle="-", lw=0.4, color=col))
+                              fontsize=11, ha="left", color=col,
+                              arrowprops=dict(arrowstyle="-", lw=0.6, color=col))
                 continue
             if r["outcome"] == "success":
-                ax3.scatter(k, a, s=25, color=col, marker="o", zorder=3,
-                             edgecolors="black", linewidths=0.4)
+                ax3.scatter(k, a, s=44, color=col, marker="o", zorder=3,
+                             edgecolors="black", linewidths=0.6)
             elif r["outcome"] == "pending":
-                ax3.scatter(k, a, s=25, color=col, marker="s", alpha=0.4, zorder=3)
+                ax3.scatter(k, a, s=44, color=col, marker="s", alpha=0.4, zorder=3)
             else:
-                ax3.scatter(k, a, s=12, color=col, marker="x", alpha=0.65, zorder=2)
+                ax3.scatter(k, a, s=24, color=col, marker="x", alpha=0.65, zorder=2)
         ax3.axhline(b_acc, color="gray", lw=0.6, ls=":", alpha=0.6)
         ax3.axvspan(0.5, max(1, len(in1k_rows)) + 0.5, color=PHASE_COLORS["3"], alpha=0.06, zorder=0)
     ax3.set_xlim(0, max(5, len(in1k_rows) + 2))
     ax3.set_ylim(Y_LO, Y_HI)
-    ax3.set_xlabel("Hypothesis index (Phase 3, ImageNet-1K, 22M params)")
+    ax3.set_xlabel("Hypothesis index (Phase 3, ImageNet-1K, 22--27M params)")
     ax3.set_ylabel("Top-1 (%)")
-    ax3.set_title("(c) ImageNet-1K chain", fontsize=9)
+    ax3.set_title("(c) ImageNet-1K chain")
 
     plt.tight_layout()
     out = HERE / "fig_trajectory.pdf"
@@ -224,7 +225,7 @@ def fig_success_rate(rows):
         lo = max(0, i - window + 1)
         rolling.append(sum(ys[lo:i + 1]) / (i - lo + 1))
 
-    fig, ax = plt.subplots(figsize=(7.0, 2.8))
+    fig, ax = plt.subplots(figsize=(7.0, 3.05))
     x = np.arange(1, len(ys) + 1)
 
     # Phase boundaries and band fills (drawn first, behind line).
@@ -252,13 +253,13 @@ def fig_success_rate(rows):
             continue
         rate = mean_rate(ph)
         ax.hlines(rate, lo, hi, colors=PHASE_COLORS[ph],
-                   linewidth=1.2, linestyles="dashed", zorder=2)
+                   linewidth=1.7, linestyles="dashed", zorder=2)
         ax.text((lo + hi) / 2, label_y, f"{PHASE_LABEL[ph]}: {rate:.0%}",
-                 ha="center", va="top", fontsize=8, color=PHASE_COLORS[ph],
+                 ha="center", va="top", fontsize=12, color=PHASE_COLORS[ph],
                  bbox=label_bbox, zorder=5)
 
     # Rolling line drawn last so it sits on top of the bands.
-    ax.plot(x, rolling, color="black", lw=1.2, zorder=3)
+    ax.plot(x, rolling, color="black", lw=1.9, zorder=3)
 
     # Phase-boundary verticals.
     prev = 0.5
@@ -270,7 +271,7 @@ def fig_success_rate(rows):
     ax.set_xlim(0.5, len(relevant) + 0.5)
     ax.set_ylim(-0.02, 1.05)
     ax.set_xlabel("Hypothesis index")
-    ax.set_ylabel(f"{window}-hypothesis rolling success rate")
+    ax.set_ylabel("Rolling success rate")
     ax.set_title(f"Rolling success rate across phases ({window}-hypothesis window)")
 
     plt.tight_layout()
